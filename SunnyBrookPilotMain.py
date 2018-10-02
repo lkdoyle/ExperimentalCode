@@ -9,7 +9,7 @@ dir = "D:/allNoise"
 #file in reference to cwd that the stimuli are stored in
 stimFile = "Stimuli/"
 
-imageFile = "./lists/pilotImageFileA.csv"
+imageFile = "./lists/trainingImageFile.csv"
 
 #MONITOR FOR LAB 36.4/29.7, 57cm away 
 
