@@ -9,11 +9,11 @@ dir = "D:/allNoise"
 #file in reference to cwd that the stimuli are stored in
 stimFile = "Stimuli/"
 
-imageFile = "./lists/trainingImageFile.csv"
+imageFile = "./lists/trainingflickerlist0.csv"
 
 #MONITOR FOR LAB 36.4/29.7, 57cm away 
 
-version = 'Pilot1.4'
+version = 'PVTraining1.0'
 
 
 def promptScreen(Screen, Clock):
@@ -93,18 +93,17 @@ def confidencePrompt(Screen, Clock, waitTime):
     first = event.getKeys(None, False, Clock)
     return(first)
 
-def ChoiceConfidenceTrial(TopImage, BottomImage, Clock, Screen, tStim, bStim, expData, presTime, waitTime):
+def ChoiceConfidenceTrial(TopImage, BottomImage, flicker, Clock, Screen, tStim, bStim, expData, presTime, waitTime):
     """ForcedChoiceTrial plays one trial of a forced choice paradigm given time and stimuli and returns the keypresses of the individual"""
     first = [(-1 , -1), (-1, -1)]
     #set the argument images to the matching image object
     TopImage.setImage(tStim)
     BottomImage.setImage(bStim)
     #fixation cross
-    fx = ShapeStim(Screen, vertices= 'cross', size=1, pos=(0, 0), lineColor='red', fillColor='red')
+    fx = ShapeStim(Screen, vertices= 'cross', size = 1, pos=(0, 0), lineColor = 'red', fillColor = 'red')
     
     expData.addData("tStim", os.path.basename(tStim))
     expData.addData("bStim", os.path.basename(bStim))
-    
     
     #draw the fixation cross to the screen
     fx.draw()
@@ -117,15 +116,50 @@ def ChoiceConfidenceTrial(TopImage, BottomImage, Clock, Screen, tStim, bStim, ex
     core.wait(1, 1)
     
     #draw the stimuli to the screen's buffer
+    
     TopImage.draw(Screen)
     BottomImage.draw(Screen)
     
-    #present the stimuli simultaneously by flipping the buffer
+    
+    #4 hz flicker begin
+    #if top image is flickered
+    for i in range(2):
+        xdiff = random.uniform(-0.5, 0.5)
+        ydiff = random.uniform(-0.5, 0.5)
+        if flicker == 0:
+            #Screen.flip()
+            Clock.reset()
+            core.wait(presTime, presTime)
+            break
+            
+        elif flicker == 1: #flicker == 1, bottom image needs to be flickered
+            #present the stimuli simultaneously by flipping the buffer
+            #Screen.flip()
+            Clock.reset()
+            BottomImage.pos((0+xdiff, 8+ydiff))
+            BottomImage.draw(Screen)
+            
+        elif flicker == 2:
+            #present the stimuli simultaneously by flipping the buffer
+            #Screen.flip()
+            Clock.reset()
+            TopImage.pos((0+xdiff, 8+ydiff))
+            TopImage.draw(Screen)
+            #reset the clock on next cpu tick to allow for stimulus duration
+            
+        else: #flicker == 3:
+            TopImage.pos((0+xdiff, 8+ydiff))
+            TopImage.pos((0+xdiff, 8+ydiff))
+            #Screen.flip()
+            Clock.reset()
+        #Wait for the 1/3 given amount of time in arg 4, still listen for keypresses though
+        core.wait(presTime/3, presTime/3)
+        
+        TopImage.draw(Screen)
+        BottomImage.draw(Screen)
+        Screen.flip()
+    
     Screen.flip()
-    #reset the clock on next cpu tick to allow for stimulus duration
-    Clock.reset()
-    #Wait for the given amount of time in arg 4, still listen for keypresses though
-    core.wait(presTime, presTime)
     
     q = visual.TextStim(Screen, text="Which image was clearer? Top/Bottom?")
     #draw to the buffer
@@ -144,8 +178,8 @@ def ChoiceConfidenceTrial(TopImage, BottomImage, Clock, Screen, tStim, bStim, ex
     #return pressed Keys
     return(first)
     
-
 def getCorrect(name1, name2):
+    """returns the noise difference between the two passed images as an int"""
     i = 0
     j = 0
     ret = [0, 0]
@@ -177,6 +211,7 @@ def getImagesfromFile(dir, nameFile):
     files = os.listdir(dir)
     #read the namefile into a dataframe
     df = pandas.read_csv(nameFile)
+    print(df)
     #get first column   
     names1 = df["top"]
     #get second column
@@ -254,7 +289,7 @@ def main():
     expInfo = inputScreen()
     
     breakNum = 3
-    breakTime = 60
+    breaktime = 6
     print(expInfo)
     
     #without info experiment can't run. Immediately end.
@@ -266,20 +301,18 @@ def main():
     
     TopImage = visual.ImageStim(Screen, pos=(0, 8))
     BottomImage = visual.ImageStim(Screen, pos=(0, -8))
-    
     #create a clock object in order to time and report reaction times
     Clock = core.Clock()
-
+    
     #collect stimuli and make a 2d array to be passed to the files
     stim = getImagesfromFile(dir, imageFile)
 
     dataFile = expInfo["Participant"] + version + "_data"
-
+    
     #conditions = data.importConditions("./conditions.xlsx")
 
     #Experiment handler
     expData = data.ExperimentHandler(name=expInfo["Participant"], extraInfo= expInfo, version=version, dataFileName = dataFile + "backup")
-
 
     #trialData = data.TrialHandler(conditions, len(stim), method=u'random')
 
@@ -292,38 +325,47 @@ def main():
     random.shuffle(stim)
     breaknote = len(stim) / breakNum
     
+    
     for i in range(len(stim)):
+
+        flicker = random.getrandbits(1)
         
-        #breakHandling
-        if i%breaknote == 0:
-            visual.TextStim(Screen, text="1 minute break")).draw()
-            screen.flip()
-            core.wait(60, 60)
-            screen.flip()
-            
-            
-        expData.addData("trial", i)
+        #expData.addData("trial", i)
         
-        result = ChoiceConfidenceTrial(TopImage, BottomImage, Clock, Screen, 
+        result = ChoiceConfidenceTrial(TopImage, BottomImage, flicker, Clock, Screen, 
                                         stim[i][0], stim[i][1], expData, 
                                         float(expInfo["presTime"]), float(expInfo["waitTime"]))
                                         
+                                        
         conf = confidencePrompt(Screen, Clock, float(expInfo["confTime"]))
         
-        
-        #checking for participant cancel
-        if result:
-            #print(result)
-            if result[0][0] == 'escape':
+        if result and conf:
+            if result[0][0] in ('up', 'down') and conf[0][0] in ('1', '2', '3', '4'):
+                visual.TextStim(Screen, pos=(0, 0), text="good.").draw()
+                Screen.flip()
+                core.wait(1, 1)
+
+            elif result[0][0] == 'escape':
                 print("participant cancelled")
                 Screen.close
                 core.quit
                 return("participant cancelled")
-        
+
+            else:
+                visual.TextStim(Screen, pos=(0, 0), text="a response was an incorrect key").draw()
+                Screen.flip()
+                core.wait(1, 1)
+        else:
+            visual.TextStim(Screen, pos=(0, 0), text="Missing response").draw()
+            Screen.flip()
+            core.wait(1, 1)
+            
+        """
         correct = getCorrect(stim[i][0], stim[i][1])
         
         expData.addData("corrAns", correct[0])
         expData.addData("stimDiff", correct[1])
+        expData.addData("flicker", flicker)
         
         #handling empty results
         if(len(result) > 0):
@@ -346,7 +388,7 @@ def main():
 
 
     expData.saveAsWideText(dataFile, delim=',', appendFile=True)
-
+"""
 
     #cleanup cleanup
     Screen.close()
