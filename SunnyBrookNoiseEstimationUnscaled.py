@@ -22,7 +22,7 @@ version = 'NE1.0'
 def promptScreen(Screen, Clock):
     """simply a screen which allows the participant to get comfortable and ready before the experiment trials begin"""
     #draw text to buffer
-    msg = visual.TextStim(Screen, text="Get Ready, press any key to begin.")
+    msg = visual.TextStim(Screen, color='black', text="Get Ready, press any key to begin.")
     msg.draw()
     
     #flip buffer to Screen
@@ -80,10 +80,10 @@ def simpleInputScreen():
 def confidencePrompt(Screen, Clock, waitTime):
     """a script to call which asks participants to respond on a scale of 0-4 how confident they were"""
     first = [(-1 , -1), (-1, -1)]
-    msg = visual.TextStim(Screen, text="How confident are you in your answer?")
-    prompt = visual.TextStim(Screen, pos=(0, -1), text="1, 2, 3, 4")
-    arrows = visual.TextStim(Screen, pos = (0, -2.5), text="  ^       ^  ")
-    values = visual.TextStim(Screen, pos = (0, -4), text="don't know      confident")
+    msg = visual.TextStim(Screen, color='black', text="How confident are you in your answer?")
+    prompt = visual.TextStim(Screen, color='black', pos=(0, -1), text="1, 2, 3, 4")
+    arrows = visual.TextStim(Screen, color='black', pos = (0, -2.5), text="  ^       ^  ")
+    values = visual.TextStim(Screen, color='black', pos = (0, -4), text="don't know      confident")
     msg.draw()
     prompt.draw()
     arrows.draw()
@@ -163,7 +163,7 @@ def ChoiceConfidenceTrial(TopImage, BottomImage, flicker, Clock, Screen, tStim, 
     core.wait(2*presTime/3, 2*presTime/3)
     
     
-    q = visual.TextStim(Screen, text="Which image was clearer? Top/Bottom?")
+    q = visual.TextStim(Screen, color='black', text="Which image was clearer? Top/Bottom?")
     #draw to the buffer
     q.draw()
     #flip screen back to blank. This is the response screen
@@ -251,7 +251,7 @@ def populateFileArray(nameFile):
         #simpler version of above script
 
 def noiseEstimation(chosenImage, Clock, Screen, expData):
-    noiseScale = visual.RatingScale(Screen, choices=None, low=0, high=300, tickMarks=None, 
+    noiseScale = visual.RatingScale(Screen, lineColor='black', choices=None, low=0, high=300, tickMarks=None, 
                                     labels=None, mouseOnly=True, showValue=False, acceptText='Match', 
                                     acceptKeys='return')
     #change image to the default read
@@ -357,7 +357,7 @@ def main():
         exit()
         
     #Initialize the screen object
-    Screen = visual.Window(size=(1920, 1080), monitor='defaultMonitor', fullscr=False, units = "deg")
+    Screen = visual.Window(size=(1920, 1080), monitor='defaultMonitor', fullscr=False, color='white', units = "deg")
     
     TopImage = visual.ImageStim(Screen, pos=(0, 8))
     BottomImage = visual.ImageStim(Screen, pos=(0, -8))
@@ -377,7 +377,8 @@ def main():
 
     #loop through stimulus list, presenting the image pairs in the trial setting.
     #expData.addLoop(trialData)
-
+    
+    #shuffle the stimuli
     random.shuffle(stim)
     breaknote = int(len(stim) / breakNum)
     
@@ -385,7 +386,7 @@ def main():
 
         #breakHandling
         if i%breaknote == 0 and i != 0:
-            visual.TextStim(Screen, text="1 minute break").draw()
+            visual.TextStim(Screen, color='black', text="1 minute break").draw()
             Screen.flip()
             core.wait(breaktime/3, breaktime/3)
             #wait half of the break duration
@@ -431,7 +432,7 @@ def main():
                 #present the noise estimation task
                 noise = noiseEstimation(chosenImage, Clock, Screen, expData)
             else:
-                visual.TextStim(Screen, text="Missing Response").draw()
+                visual.TextStim(Screen, color='black', text="Missing Response").draw()
                 Screen.flip()
                 core.wait(3)
         
