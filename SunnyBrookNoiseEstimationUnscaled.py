@@ -18,7 +18,6 @@ imageFile = "./lists/SPNoiseRating0.csv"
 
 version = 'NE1.0'
 
-
 def promptScreen(Screen, Clock):
     """simply a screen which allows the participant to get comfortable and ready before the experiment trials begin"""
     #draw text to buffer

@@ -17,7 +17,7 @@ imageFile = "./lists/SPNoiseRating0.csv"
 #MONITOR FOR LAB 36.4/29.7, 57cm away 
 
 version = 'NE1.0'
-
+event.globalKeys.add(key='q',func=core.quit)
 
 def promptScreen(Screen, Clock):
     """simply a screen which allows the participant to get comfortable and ready before the experiment trials begin"""
@@ -27,7 +27,6 @@ def promptScreen(Screen, Clock):
     
     #flip buffer to Screen
     Screen.flip()
-    
     #reset clock for cpu sleeping
     Clock.reset()
     

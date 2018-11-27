@@ -1,0 +1,3 @@
+trial,tStim,bStim,cue,prompt,fchoice,fcRT,est,estRT,conf,confRT,Participant,sessNum,presTime,counterBalance,waitTime,estTime,
+0,1118_MEDHIGH.jpg,551_HIGH.jpg,3,0,up,0.4951334303186741,NaN,Nan,3,1.146,,0,0.2,cb,1.2,2.0,
+1,1126_MEDLOW.jpg,334_HIGH.jpg,3,0,up,0.4207220465759747,0.046,2.001,5,1.173,,0,0.2,cb,1.2,2.0,

@@ -7,30 +7,36 @@ import numpy as np
 #set the directory from the images will be retrieved
 dir = ""
 #file in reference to cwd that the stimuli are stored in
-stimFile = ""
+stimFile = "D:/SCENESGRAY/"
 
 imageFile = ""
 
+version = 'SBReward1.0'
 
-version = ''
 
-def inputScreen():
-    """screen which returns a list container with the participant number, and presentation and wait times."""
-    #initialize the dictionary
-    info = {'Participant': "", 'presTime': 0, "waitTime" : 0, "confTime" : 0, 'ExpVersion' : version} 
-    #actual dialog box. edits the dictionary
-    infoDlg = gui.DlgFromDict(dictionary=info, 
-                                title='SunnyBrook Experiment', 
-                                order=['ExpVersion', 'Participant', "presTime", "waitTime", "confTime"], 
-                                tip={'Participant #': 'trained visual observer, initials'}, 
-                                fixed=['ExpVersion'])
+
+def simpleInputScreen():
     
-    #cancel handler 
-    if infoDlg.OK: 
-        return(info)
-    else:
-        print('User Cancelled')
-        return False
+    pgui = gui.Dlg()
+    pgui.addField("Subject ID:")
+    pgui.addField("Session Number (0):")
+    pgui.addField("CounterBalance:(cb) ")
+    pgui.addField("presTime (0.2):")
+    pgui.addField("waitTime (1.2):")
+    pgui.addField("estTime (2):")
+    
+    # show the gui
+    pgui.show()
+
+    # put data in variables for return
+    participant = pgui.data[0]
+    sessNum = pgui.data[1]
+    counterBalance = pgui.data[2]
+    presTime = pgui.data[3]
+    waitTime = pgui.data[4]
+    estTime = pgui.data[5]
+    
+    return((participant, sessNum, counterBalance, presTime, waitTime, estTime))
 
 
 def tagImages(nameArr, percCons, percRel):
@@ -48,17 +54,17 @@ def tagImages(nameArr, percCons, percRel):
         i+=1
         
     #tag a random number of these with the percent consistent 
-    for j in range(percCons)
+    for j in range(percCons):
         index = random.random(0, len(randArr))
         out[randArr.pop(index)][2] = 2
     
     #fill the reliable
-    for j in range(percRel)
+    for j in range(percRel):
         index = random.random(0, len(randArr))
         out[randArr.pop(index)][2] = 1
         
     #fill the remainder
-    for i in randArr
+    for i in randArr:
         out[i][2] = 0
     
     return out
@@ -124,33 +130,36 @@ def getImagesfromFile(dir, nameFile, percCond1, percCond2):
     return namePairs
     
     
-def fourArmedTrial(StimArr, Clock, Screen, Mouse, trialData, presTime)
-"""fourArmedTrial takes in StimArr, which is a list of list of lists, first list containing a list of images, the second list containing image and reward tag"""
+def fourArmedTrial(StimArr, Clock, Screen, Mouse, trialData, presTime):
+    """fourArmedTrial takes in StimArr, which is a list of list of lists, first list containing a list of images, the second list containing image and reward tag"""
+    #reset the mouse so previous clicks don't count
+    Mouse.clickReset()
     
-    topLeft = visual.ImageStim(Screen, pos=(-8, 8))
-    topRight = visual.ImageStim(Screen, pos=(8, 8))
-    botLeft = visual.ImageStim(Screen, pos=(-8, -8))
-    botRight = visual.ImageStim(Screen, pos=(8, -8))
-    
+    #set up stimuli REDUNDANT AFTER FIRST TRIAL, COULD MOVE FOR EFFICIENCY 
+    topLeft = visual.ImageStim(Screen, pos=(-6, 6))
+    topRight = visual.ImageStim(Screen, pos=(6, 6))
+    botLeft = visual.ImageStim(Screen, pos=(-6, -6))
+    botRight = visual.ImageStim(Screen, pos=(6, -6))
+    #assign corresponding images
     topLeft.setImage(StimArr[0][0])
     topRight.setImage(StimArr[1][0])
     botLeft.setImage(StimArr[2][0])
     botRight.setImage(StimArr[3][0])
-    
+    #assign reward values
     topLeftReward = StimArr[0][1]
     topRightReward = StimArr[1][1]
     botLeftReward = StimArr[2][1]
     botRightReward = StimArr[3][1]
     
+    
+def presentTrial(Screen, Clock, rewardCount):
+    
     Screen.flip()
     Mouse.setPos(newPos=(0,0))
     Clock.reset()
     
-    if 
     rewardCount = 0
     
-    
-
 #===========================================================================================================================
 #this is the beginning of the main program, Which actually runs the participant
 #===========================================================================================================================
@@ -201,9 +210,10 @@ def main():
         while expClock.getTime() < (thisOnset+presTime):
             rewardResp = fourArmedTrial(stims[trial], resplock, Screen, Mouse, trialData, presTime)
             
-        #record data
+        #record data if response was clocked
         if rewardResp:
             trialData.loc[trial, 'choice'] = rewardResp[0]
+            trailData.loc[trial, 'RT'] = rewardResp[1]
             
             
     return None 
