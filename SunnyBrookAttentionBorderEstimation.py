@@ -15,7 +15,7 @@ ndir = "D:/SCENESGRAY/"
 #MONITOR FOR LAB 36.4/29.7, 57cm away 
 stimNumUndergrad = 468
 stimNumSunnybrook = 72
-stimNumTraining = 10
+stimNumTraining = 36
 version = 'PosNE2.0'
 
 #TOOLS TO MAKE AN IMAGE FILE UNIQUE TO PARTICIPANT
@@ -294,12 +294,13 @@ def ChoiceConfidenceTrial(fx, TopImage, BottomImage, cue, prompt, Clock, trialCl
         core.wait(0.001)
         
     Screen.flip()
-    Clock.reset()
-    
+    #Clock.reset()
+    print("1", trialClock.getTime())
     #wait the designated retention interval, which is one second here.
     while trialClock.getTime() < cueOnsetTime + cueActionTime + 0.046 + presTime + 1:
         core.wait(0.001)
         
+    print("2", trialClock.getTime())
     #pull the input from the participant's trial and return it
     first = event.getKeys(None, False, Clock)
     
@@ -444,7 +445,7 @@ def main():
     breakNum = 5
     breakTime = 60
     
-    totTrialTime = 1 + float(cueTime) + float(presTime) + float(waitTime)
+    totTrialTime = 1 + float(cueTime) + float(presTime) + 1
     
     #print(totTrialTime)
     #print(2.5)
@@ -502,14 +503,17 @@ def main():
                                         respClock, trialClock, Screen, tStim, bStim, 
                                         float(presTime), float(waitTime))
         
-        if prompt == 1: #bottom image
+        if prompt == 0: #bottom image
             chosenImage = bStim
+            promptString = "bottom"
         else:
             chosenImage = tStim
+            promptString = "top"
+        
         
         while trialClock.getTime() < totTrialTime:
             core.wait(0.001)
-            
+        
         noiseest = noiseEstimation(chosenImage, estTime, respClock, Screen)
             
         while trialClock.getTime() < totTrialTime + estTime:
@@ -518,22 +522,17 @@ def main():
             
         conf = confidencePrompt(fx, Screen, respClock, trialClock, float(waitTime), counterBalance)
         
+        
         while trialClock.getTime() < totTrialTime + estTime + waitTime:
             core.wait(0.001)
         
         expData.addData("tStim", os.path.basename(tStim))
         expData.addData("bStim", os.path.basename(bStim))
         expData.addData("cue", cue)
-        expData.addData("prompt", prompt)
+        expData.addData("prompt", promptString)
         
         #handling empty results
-        if result:
-            expData.addData("fchoice", result[0][0])
-            expData.addData("fcRT", result[0][1])  # add the data to our set
-        else:
-            expData.addData("fchoice", 'NaN')
-            expData.addData("fcRT", 'NaN')
-            
+        
         if noiseest:
             expData.addData("est", noiseest[0])
             expData.addData("estRT", noiseest[1])  # add the data to our set
@@ -550,7 +549,7 @@ def main():
             expData.addData("confRT", 'NaN')
             
         
-        print(trialClock.getTime()) # 6.1 seconds per trial
+        print(trialClock.getTime())
         while trialClock.getTime() < totTrialTime + estTime + waitTime + 0.25:
             core.wait(0.001)
         expData.nextEntry()

@@ -1,0 +1,3 @@
+trial,tStim,bStim,cue,prompt,est,estRT,conf,confRT,Participant,sessNum,presTime,counterBalance,waitTime,estTime,
+0,766_LOW.jpg,183_HIGH.jpg,3,0,0.055,3.005,5,1.871,asd,0,0.2,non,2.0,3.0,
+1,438_MEDHIGH.jpg,900_HIGH.jpg,3,0,0.068,3.013,6,1.955,asd,0,0.2,non,2.0,3.0,

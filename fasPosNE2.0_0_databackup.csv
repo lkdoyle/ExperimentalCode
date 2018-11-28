@@ -1,0 +1,8 @@
+trial,tStim,bStim,cue,prompt,est,estRT,conf,confRT,Participant,sessNum,presTime,counterBalance,waitTime,estTime,
+0,485_HIGH.jpg,161_MEDLOW.jpg,1,top,0.021,3.001,5,1.839,fas,0,0.2,cb,2.0,3.0,
+1,1373_MEDHIGH.jpg,1277_MEDLOW.jpg,1,top,0.026,3.002,4,1.913,fas,0,0.2,cb,2.0,3.0,
+2,1318_MEDLOW.jpg,885_LOW.jpg,3,top,0.093,3.002,5,1.951,fas,0,0.2,cb,2.0,3.0,
+3,1047_HIGH.jpg,1376_LOW.jpg,3,top,0.025,3.012,None,1.93,fas,0,0.2,cb,2.0,3.0,
+4,487_LOW.jpg,442_MEDLOW.jpg,3,top,0.028,3.016,2,1.952,fas,0,0.2,cb,2.0,3.0,
+5,1321_LOW.jpg,401_HIGH.jpg,3,top,NaN,Nan,4,1.921,fas,0,0.2,cb,2.0,3.0,
+6,583_MEDHIGH.jpg,1073_LOW.jpg,1,top,NaN,Nan,None,1.92,fas,0,0.2,cb,2.0,3.0,
